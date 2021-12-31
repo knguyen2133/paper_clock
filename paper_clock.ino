@@ -18,6 +18,11 @@ static Adafruit_PWMServoDriver pwm_hour_controller = Adafruit_PWMServoDriver(0x4
 // Structure Declaration
 static DateTime displayed_time;
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// @brief Initialize the RTC module and the servo motor controllers
+//
+////////////////////////////////////////////////////////////////////////////////////////////
 void setup()
 {
     // RTC Clock initialization
@@ -44,6 +49,11 @@ void setup()
     ResetTime();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// @brief Poll every 500 ms to check the time and display it on the clock device
+//
+////////////////////////////////////////////////////////////////////////////////////////////
 void loop()
 {
     DateTime current_time = RTC.now();
@@ -62,6 +72,11 @@ void loop()
     delay(500);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// @brief Zeros out the time on the display resulting the clock device to show 00:00 AM
+//
+////////////////////////////////////////////////////////////////////////////////////////////
 void ResetTime()
 {
     DateTime zero_time;
@@ -74,6 +89,11 @@ void ResetTime()
     displayed_time = zero_time;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// @brief Command the respective servo motor to project outward for a pulse
+//
+////////////////////////////////////////////////////////////////////////////////////////////
 void PushOut(const Adafruit_PWMServoDriver &pwm_controller, const int servo_motor, uint16_t positioned_outward)
 {
     if (positioned_outward < SERVO_IN)
@@ -82,6 +102,11 @@ void PushOut(const Adafruit_PWMServoDriver &pwm_controller, const int servo_moto
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// @brief Command the respective servo motor to project inward for a pulse
+//
+////////////////////////////////////////////////////////////////////////////////////////////
 void PushIn(const Adafruit_PWMServoDriver &pwm_controller, const int servo_motor, const uint16_t positioned_inward)
 {
     if (positioned_inward > SERVO_OUT)
@@ -90,6 +115,11 @@ void PushIn(const Adafruit_PWMServoDriver &pwm_controller, const int servo_motor
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// @brief Display the digit requested on the corresponding side of the clock
+//
+////////////////////////////////////////////////////////////////////////////////////////////
 void Display(const PositionEnum &position, const unsigned int number, uint16_t positioned_inward, uint16_t positioned_outward)
 {
     int servo_multiplier = 0;
@@ -220,6 +250,13 @@ void Display(const PositionEnum &position, const unsigned int number, uint16_t p
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// @brief Display whether it is AM/PM
+//
+// @note Made the display go inward half way for aesthetic reasons
+//
+////////////////////////////////////////////////////////////////////////////////////////////
 void DisplayAmPm(const bool is_pm, const uint16_t positioned_inward, const uint16_t positioned_outward)
 {
     constexpr int AM_SERVO_MOTOR = 28;
@@ -242,6 +279,15 @@ void DisplayAmPm(const bool is_pm, const uint16_t positioned_inward, const uint1
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// @brief Parses the time to display the digit to the corresponding side of the clock
+//
+// @note This function will be invoked continuously in a loop as all sections of the clock
+//       will appear to protrude out to its respective digit synchronizously for aesthetic
+//       appearances
+//
+////////////////////////////////////////////////////////////////////////////////////////////
 void DisplayTime(const DateTime &time, const uint16_t positioned_inward, const uint16_t positioned_outward)
 {
     // AM and PM on the colon
